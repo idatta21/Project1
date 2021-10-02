@@ -87,32 +87,36 @@ df<-as.data.frame(data)
   # Return the output data.frame.
   return(df)
 }
-Province("Diamond Princess")
-
 ```
-
 ```{r}
-Summary <- function(UProvince){
-  ###
-  # This functions returns a data.frame with ID,Province,Death
-  # Recovered ,Active cases based on USA. It can also
-  # return those columns for a single province if a province name is passed.
-  ###
-  
-  # Get the Country data from the USA endpoint.
-  outputAPI<-GET("https://api.covid19api.com/live/country/USA")
-data<-fromJSON(rawToChar(outputAPI$content))
-df<-as.data.frame(data)
-  # If Province does not equal "all", check if it is a Province name.
-  if (UProvince !="all"){
+summary<-function(CountryName){
+         outputAPI<-GET("https://api.covid19api.com/summary")
+         data<-fromJSON(rawToChar(outputAPI$content))
+         df<-as.data.frame(data)
+         if (CountryName !="all"){
     # subset output for just that row.
     
-      df<-filter(df,Province == UProvince)
+      df<-filter(df,Countries.Country == CountryName)
     
   }
   # Return the output data.frame.
   return(df)
-}
-Country("Diamond Princess")
 
 }
+
+```
+```{r}
+findCountryByCode <- function( CountryCode){
+         outputAPI<-GET("https://api.covid19api.com/summary")
+         data<-fromJSON(rawToChar(outputAPI$content))
+         df<-as.data.frame(data)
+  if (CountryCode != "all"){
+    df <- filter(df,Countries.CountryCode == CountryCode) %>% select(Countries.Country,everything())
+  }
+  
+  return(df)
+}
+
+
+```
+
