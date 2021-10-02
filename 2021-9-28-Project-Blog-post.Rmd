@@ -61,6 +61,30 @@ convertToNumeric <- function(vec){
   return(output)
 }
 ```
+# A function retuens current cases for all the country
+```{r}
+summary<-function(CountryName){
+         outputAPI<-GET("https://api.covid19api.com/summary")
+         data<-fromJSON(rawToChar(outputAPI$content))
+         df<-as.data.frame(data)
+         #if country name is in Countries.country
+         if (CountryName %in% df$Countries.Country){
+         # subset output for just that row.
+         df<-filter(df,Countries.Country == CountryName)
+         }
+         # if country name is in countrycode
+         else if (CountryName %in% df$Countries.CountryCode ){
+          df<-filter(df,Countries.CountryCode == CountryName) 
+         }
+         # if country code in country slug
+         else if (CountryName %in% df$Countries.Slug ){
+          df<-filter(df,Countries.Slug == CountryName) 
+         }
+        # Return the output data.frame.
+        return(df)
+}
+summary("AF")
+```
 ## `Province`
 
 I wrote this function to interact with the `Province` endpoint of the Covid19 API.It returns all countries and associated provinces. 
@@ -88,23 +112,7 @@ df<-as.data.frame(data)
   return(df)
 }
 ```
-```{r}
-summary<-function(CountryName){
-         outputAPI<-GET("https://api.covid19api.com/summary")
-         data<-fromJSON(rawToChar(outputAPI$content))
-         df<-as.data.frame(data)
-         if (CountryName !="all"){
-    # subset output for just that row.
-    
-      df<-filter(df,Countries.Country == CountryName)
-    
-  }
-  # Return the output data.frame.
-  return(df)
 
-}
-
-```
 ```{r}
 findCountryByCode <- function( CountryCode){
          outputAPI<-GET("https://api.covid19api.com/summary")
@@ -119,4 +127,32 @@ findCountryByCode <- function( CountryCode){
 
 
 ```
+# wrrapper function
 
+```{r}
+CovidAPI <- function(func, ...){
+  ###
+  # This function is a wrapper for the other functions. It takes in the name
+  # of the function to use as a character and any additional arguments for that
+  # function.
+  ###
+  
+  # Find and call the appropriate function using conditional logic.
+  
+  if (func == "Province"){
+    df <- Province(...)
+  }
+  else if (func == "summary"){
+    df <- summary(...)
+  }
+  else if (func == "findCountryByCode"){
+    df <- findCountryByCode(...)
+  }
+  else {
+    stop("ERROR: Argument for func is not valid!")
+  }
+  
+  # Return the output from the appropriate function.
+  return(df)
+}
+```
