@@ -61,12 +61,38 @@ convertToNumeric <- function(vec){
   return(output)
 }
 ```
-## `Country`
+## `Province`
 
-I wrote this function to interact with the `Country` endpoint of the Covid19 API.It returns all countries and associated provinces. The country_slug variable is used for country specific data.Some franchises have changed team names over the years as they change location. It takes one argument; `Country`, which can either be `"all"`, the full name of a team (e.g. `"New Jersey Devils"`), or the **franchise Id** (e.g. `23` for the New Jersey Devils).
+I wrote this function to interact with the `Province` endpoint of the Covid19 API.It returns all countries and associated provinces. 
 
 ```{r}
-Country <- function(UProvince){
+Province <- function(UProvince){
+  ###
+  # This functions returns a data.frame with ID,Province,Death
+  # Recovered ,Active cases based on USA. It can also
+  # return those columns for a single province if a province name is passed.
+  ###
+  
+  # Get the Country data from the USA endpoint.
+  outputAPI<-GET("https://api.covid19api.com/live/country/USA")
+data<-fromJSON(rawToChar(outputAPI$content))
+df<-as.data.frame(data)
+  # If Province does not equal "all", check if it is a Province name.
+  if (UProvince !="all"){
+    # subset output for just that row.
+    
+      df<-filter(df,Province == UProvince)
+    
+  }
+  # Return the output data.frame.
+  return(df)
+}
+Province("Diamond Princess")
+
+```
+
+```{r}
+Summary <- function(UProvince){
   ###
   # This functions returns a data.frame with ID,Province,Death
   # Recovered ,Active cases based on USA. It can also
@@ -89,5 +115,4 @@ df<-as.data.frame(data)
 }
 Country("Diamond Princess")
 
-```
-
+}
