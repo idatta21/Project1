@@ -9,13 +9,85 @@ date: "9/28/2021"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-### • explaining what you did in the project and any interesting findings
-### • You should also reflect on the process you went through for this project. Discuss things like:
-#### – what was the most difficult part of the logic and programming for you?
-#### – what would you do differently in approaching a similar project in the future?
-###• In your blog post, provide a link to your github pages repo and the usual repo as well!
+ • explaining what you did in the project and any interesting findings
+ • You should also reflect on the process you went through for this project. Discuss things like:
+ – what was the most difficult part of the logic and programming for you?
+ – what would you do differently in approaching a similar project in the future?
+• In your blog post, provide a link to your github pages repo and the usual repo as well!
 
-## To use the functions for interacting with the NHL API, I used the following packages:
+# Requirements 
+ To use the functions for interacting with the API, I used the following packages:
 
 - [`tidyverse`](https://www.tidyverse.org/): useful features for data manipulation and visualization
 - [`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/): API interaction
+- [`httr`](https://cran.r-project.org/web/packages/httr/index.html): For using function to interact with API
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+# Load in the packages.
+#install.packages("httr")
+
+library(tidyverse)
+library(jsonlite)
+library(httr)
+```
+# API Interaction Functions
+```{r}
+outputAPI<-GET("https://api.covid19api.com/live/country/USA")
+data<-fromJSON(rawToChar(outputAPI$content))
+df<-as.data.frame(data)
+```
+
+## `convertToNumeric`
+
+It is a helper function to convert columns that contain numeric data stored as `character` values to numeric data types. 
+
+```{r}
+convertToNumeric <- function(vec){
+  ###
+  # This function will convert the input vector to a numeric vector if it is 
+  # able to. Otherwise, it just returns the vector.
+  ###
+  
+  # If any of the values in vec return NA when trying to convert to numeric,
+  # set output to the unchanged input.
+  if (any(is.na(suppressWarnings(as.numeric(vec))) == TRUE)){
+    output <- vec
+  }
+  # Otherwise, convert vec to a numeric vector.
+  else {
+    output <- as.numeric(vec)
+  }
+  # Return output.
+  return(output)
+}
+```
+## `Country`
+
+I wrote this function to interact with the `Country` endpoint of the Covid19 API.It returns all countries and associated provinces. The country_slug variable is used for country specific data.Some franchises have changed team names over the years as they change location. It takes one argument; `Country`, which can either be `"all"`, the full name of a team (e.g. `"New Jersey Devils"`), or the **franchise Id** (e.g. `23` for the New Jersey Devils).
+
+```{r}
+Country <- function(UProvince){
+  ###
+  # This functions returns a data.frame with ID,Province,Death
+  # Recovered ,Active cases based on USA. It can also
+  # return those columns for a single province if a province name is passed.
+  ###
+  
+  # Get the Country data from the USA endpoint.
+  outputAPI<-GET("https://api.covid19api.com/live/country/USA")
+data<-fromJSON(rawToChar(outputAPI$content))
+df<-as.data.frame(data)
+  # If Province does not equal "all", check if it is a Province name.
+  if (UProvince !="all"){
+    # subset output for just that row.
+    
+      df<-filter(df,Province == UProvince)
+    
+  }
+  # Return the output data.frame.
+  return(df)
+}
+Country("Diamond Princess")
+
+```
+
