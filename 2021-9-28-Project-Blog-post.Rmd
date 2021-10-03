@@ -164,13 +164,13 @@ Two variables of interest to me are shots per game and shooting percentage. I'm 
 ```{r}
 # Add a column for the death per 10000
 currentData <- currentData %>%
-  mutate(deathRate = round((Countries.TotalDeaths*10000 )/ Global.TotalDeaths),0)
+  mutate(deathRate = round((Countries.TotalDeaths*10000 )/ Global.TotalDeaths,0),NewconfirmRate=round((Countries.TotalConfirmed*10000 )/ Global.TotalConfirmed,0))
 
 # Create a Bar Plot of deathRate per Country( frist 10 country from the dataset).
-head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
+plot1<-head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
              fill=deathRate)) +
   geom_col() + 
-  # Rotate the x-axis labls 90 degrees and remove the legend.
+  #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
   # Set the axes labels.
   scale_x_discrete("Country") + 
@@ -179,3 +179,16 @@ head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
   ggtitle("First 10 country death rate from Current data") 
 
 ```
+```{r}
+# Create a scatter Plot of deathRate per Country( first 10 country from the dataset).
+plot2<-currentData %>% ggplot(aes(NewconfirmRate,deathRate,
+color=deathRate)) +
+  geom_point(size=1, alpha=0.75) + 
+  # Rotate the x-axis labls 90 degrees and remove the legend.
+  theme( legend.position="none") +
+  # Set the axes labels.
+  scale_x_continuous("NewconfirmRate") + 
+  scale_y_continuous("DeathRate") +
+  # Add a title.
+  ggtitle("First 10 country death rate from Current data") 
+}
