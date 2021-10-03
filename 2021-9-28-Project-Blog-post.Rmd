@@ -61,12 +61,13 @@ convertToNumeric <- function(vec){
   return(output)
 }
 ```
-# A function retuens current cases for all the country
+# This function returns current cases for all the country along with globalcases and can also return for single country if name passed as argument.
 ```{r}
-summary<-function(CountryName){
+summary<-function(CountryName ="all"){
          outputAPI<-GET("https://api.covid19api.com/summary")
          data<-fromJSON(rawToChar(outputAPI$content))
          df<-as.data.frame(data)
+         if ( CountryName != "all"){
          #if country name is in Countries.country
          if (CountryName %in% df$Countries.Country){
          # subset output for just that row.
@@ -80,51 +81,49 @@ summary<-function(CountryName){
          else if (CountryName %in% df$Countries.Slug ){
           df<-filter(df,Countries.Slug == CountryName) 
          }
+          else {
+      message <- paste("ERROR: Argument for country was not found in either",
+                       "the countryName or code columns. Try Countries('all') to",
+                       "find the CountryName you're looking for.")
+      stop(message)
+          }
+         }
+          # Do nothing if the Country value equals "all".
+  else {
+    
+  }
         # Return the output data.frame.
         return(df)
 }
-summary("AF")
-```
-## `Province`
 
-I wrote this function to interact with the `Province` endpoint of the Covid19 API.It returns all countries and associated provinces. 
+```
+## `Countries`
+
+I wrote this function to interact with the `Countries` endpoint of the Covid19 API.It returns all countries and associated provinces. 
 
 ```{r}
-Province <- function(UProvince){
-  ###
-  # This functions returns a data.frame with ID,Province,Death
-  # Recovered ,Active cases based on USA. It can also
-  # return those columns for a single province if a province name is passed.
-  ###
-  
-  # Get the Country data from the USA endpoint.
-  outputAPI<-GET("https://api.covid19api.com/live/country/USA")
+Country <- function(Ucountry){
+    #Returns all the available countries and provinces, as well as the country slug for per country requests.
+  outputAPI<-GET("https://api.covid19api.com/countries")
 data<-fromJSON(rawToChar(outputAPI$content))
 df<-as.data.frame(data)
   # If Province does not equal "all", check if it is a Province name.
-  if (UProvince !="all"){
+  if (Ucountry %in% df$Country){
     # subset output for just that row.
     
-      df<-filter(df,Province == UProvince)
+      df<-filter(df,Country == Ucountry)
     
   }
   # Return the output data.frame.
   return(df)
 }
+
 ```
-
+# Returns all cases by case type for a country. Country must be the slug from /countries or /summary. Cases must be one of: confirmed, recovered, deaths
 ```{r}
-findCountryByCode <- function( CountryCode){
-         outputAPI<-GET("https://api.covid19api.com/summary")
-         data<-fromJSON(rawToChar(outputAPI$content))
-         df<-as.data.frame(data)
-  if (CountryCode != "all"){
-    df <- filter(df,Countries.CountryCode == CountryCode) %>% select(Countries.Country,everything())
-  }
-  
-  return(df)
-}
-
+  outputAPI<-GET("https://api.covid19api.com/country/south-africa")
+data<-fromJSON(rawToChar(outputAPI$content))
+df<-as.data.frame(data)
 
 ```
 # wrrapper function
@@ -138,11 +137,7 @@ CovidAPI <- function(func, ...){
   ###
   
   # Find and call the appropriate function using conditional logic.
-  
-  if (func == "Province"){
-    df <- Province(...)
-  }
-  else if (func == "summary"){
+  if (func == "summary"){
     df <- summary(...)
   }
   else if (func == "findCountryByCode"){
@@ -155,4 +150,32 @@ CovidAPI <- function(func, ...){
   # Return the output from the appropriate function.
   return(df)
 }
+```
+# Data Exploration
+
+Now that we can interact with a few of the endpoints of the Covid19 API, let's get some data from them.
+First, let's pull A function returns current cases for all the country along with global cases
+```{r}
+# Get the current cases for all of the country .
+currentData<- CovidAPI("summary")
+```
+Two variables of interest to me are shots per game and shooting percentage. I'm interested in how these two stats relate to a team's win percentage. This variable doesn't exist, so I need to calculate it. I define this as the number of wins divided by the total number of games played. 
+
+```{r}
+# Add a column for the death per 10000
+currentData <- currentData %>%
+  mutate(deathRate = round((Countries.TotalDeaths*10000 )/ Global.TotalDeaths),0)
+
+# Create a Bar Plot of deathRate per Country( frist 10 country from the dataset).
+head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
+             fill=deathRate)) +
+  geom_col() + 
+  # Rotate the x-axis labls 90 degrees and remove the legend.
+  theme(axis.text.x=element_text(angle=90), legend.position="none") +
+  # Set the axes labels.
+  scale_x_discrete("Country") + 
+  scale_y_continuous("DeathRate") +
+  # Add a title.
+  ggtitle("First 10 country death rate from Current data") 
+
 ```
