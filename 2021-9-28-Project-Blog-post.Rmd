@@ -104,7 +104,7 @@ else {
 ```{r}
 USAdetail<-function(ProvinceName ="all",type  ){
     baseurl<-"https://api.covid19api.com/live/country/united-states"
-    output<-fromJSON(baseurl)
+     output<-fromJSON(baseurl)
     # If Province does not equal "all", check if it is a Province .
         if (ProvinceName != "all" ){
            # If Province is in the Province column, subset output for just that row.
@@ -181,48 +181,29 @@ return(outputAPI)
 }
 #Livecount("iran","confirmed")
 ```
-# wrrapper function
-
-```{r}
-CovidAPI <- function(func, ...){
-  ###
-  # This function is a wrapper for the other functions. It takes in the name
-  # of the function to use as a character and any additional arguments for that
-  # function.
-  ###
-  
-  # Find and call the appropriate function using conditional logic.
-  if (func == "summary"){
-    df <- summary(...)
-  }
-  else if (func == "Country"){
-    df <- Country(...)
-  }
-   else if (func == "USProvince"){
-    df <- USProvince(...)
-  }
-  else {
-    stop("ERROR: Argument for func is not valid!")
-  }
-  
-  # Return the output from the appropriate function.
-  return(df)
-}
-```
 # Data Exploration
 
-Now that we can interact with a few of the endpoints of the Covid19 API, let's get some data from them.
+Now that we can interact with a few of the endpoints of the Covid19 API, let's get some data from them.<br>
+
 First, let's pull A function returns current cases for all the country along with global cases
 ```{r}
 # Get the current cases for all of the country .
-currentData<- CovidAPI("summary")
+currentData<- summary()
 ```
-Two variables of interest to me are shots per game and shooting percentage. I'm interested in how these two stats relate to a team's win percentage. This variable doesn't exist, so I need to calculate it. I define this as the number of wins divided by the total number of games played. 
+Second, let's pull a function returns cases by type for USA provinces.
+```{r}
+#Get all the cases of unites-states.
+currentData1<-USAdetail("Utah","Deaths")
+currentData2<-USAdetail("Utah","Recovered")
+Data<-cbind(currentData1,currentData2)
+```
+Now two variable of interest for me are detahrate and newconfirmed rate per countries. 
 
 ```{r}
-# Add a column for the death per 10000
+# Add a column for the death per 100
 currentData <- currentData %>%
-  mutate(deathRate = round((Countries.TotalDeaths*10000 )/ Global.TotalDeaths,0),NewconfirmRate=round((Countries.TotalConfirmed*10000 )/ Global.TotalConfirmed,0))
+  mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
+currentData
 
 # Create a Bar Plot of deathRate per Country( frist 10 country from the dataset).
 plot1<-head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
