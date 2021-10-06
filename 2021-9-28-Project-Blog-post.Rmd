@@ -31,9 +31,10 @@ library(httr)
 # API Interaction Functions
 
 Here are the functions to interact with Covid19 API.
-## `CountriesName`
 
-I wrote this function to interact with the `CountriesName` endpoint of the Covid19 API.It returns all countries and associated provinces. The country_slug variable is used for country specific data
+## `Country`
+
+I wrote this function to interact with the `Country` endpoint of the Covid19 API.It returns all countries and associated provinces. The country_slug variable is used for country specific data
 
 ```{r}
 Country <-function(CountryName ="all"){
@@ -162,7 +163,7 @@ else{message <- paste("ERROR: Argument for country was not found in  Country ")
       stop(message)
 }
 }
-Allcasesbycountry("Switzerland","Confirmed")
+#For ex: Allcasesbycountry("Switzerland","Confirmed")
 ```
 
 ## `LiveCount `
@@ -203,11 +204,11 @@ Now two variable of interest for me are detahrate and newconfirmed rate per coun
 # Add a column for the death per 100
 currentData <- currentData %>%
   mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
-currentData
+df<-as.data.frame(currentData)
 
 # Create a Bar Plot of deathRate per Country( first 10 country from the dataset).
-plot1<-head(currentData,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate)) +
-  geom_col() + 
+plot1<-head(df,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate)) 
+ plot1+ geom_col() + 
   #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
   # Set the axes labels.
@@ -219,8 +220,8 @@ plot1<-head(currentData,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate)
 ```
 ```{r,warning=FALSE}
 # Create a scatter Plot of death rate vs NewconfirmRate from Current data
-plot2<-currentData %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) +
-  geom_point() + 
+plot2<-df %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) 
+plot2+geom_point() + 
   #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
   # Set the axes labels.
