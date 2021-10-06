@@ -205,9 +205,8 @@ currentData <- currentData %>%
   mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
 currentData
 
-# Create a Bar Plot of deathRate per Country( frist 10 country from the dataset).
-plot1<-head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
-             fill=deathRate)) +
+# Create a Bar Plot of deathRate per Country( first 10 country from the dataset).
+plot1<-head(currentData,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate)) +
   geom_col() + 
   #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
@@ -218,19 +217,18 @@ plot1<-head(currentData,10) %>% ggplot(aes(  Countries.Country,deathRate,
   ggtitle("First 10 country death rate from Current data") 
 
 ```
-```{r}
-# Create a scatter Plot of deathRate per Country( first 10 country from the dataset).
-plot2<-currentData %>% ggplot(aes(NewconfirmRate,deathRate,
-color=deathRate)) +
-  geom_point(size=1, alpha=0.75) + 
-  # Rotate the x-axis labls 90 degrees and remove the legend.
-  theme( legend.position="none") +
+```{r,warning=FALSE}
+# Create a scatter Plot of death rate vs NewconfirmRate from Current data
+plot2<-currentData %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) +
+  geom_point() + 
+  #  remove the legend.
+  theme(axis.text.x=element_text(angle=90), legend.position="none") +
   # Set the axes labels.
   scale_x_continuous("NewconfirmRate") + 
-  scale_y_continuous("DeathRate") +
+  scale_y_continuous("deathRate") +
   # Add a title.
-  ggtitle("First 10 country death rate from Current data") 
-}
+  ggtitle(" death rate vs NewconfirmRate from Current data")
+
 ```
 ```{r}
 outputAPI<-GET("https://api.covid19api.com/summary")
