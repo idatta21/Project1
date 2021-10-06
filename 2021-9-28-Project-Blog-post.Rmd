@@ -219,7 +219,7 @@ plot1<-head(df,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate))
 
 ```
 ```{r,warning=FALSE}
-# Create a scatter Plot of death rate vs NewconfirmRate from Current data
+# Create a scatter Plot of death rate vs NewconfirmRate of Countries
 plot2<-df %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) 
 plot2+geom_point() + 
   #  remove the legend.
@@ -228,20 +228,22 @@ plot2+geom_point() +
   scale_x_continuous("NewconfirmRate") + 
   scale_y_continuous("deathRate") +
   # Add a title.
-  ggtitle(" death rate vs NewconfirmRate from Current data")
+  ggtitle(" death rate vs NewconfirmRate of countries ")
 
 ```
 ```{r}
-outputAPI<-GET("https://api.covid19api.com/summary")
-         data<-fromJSON(rawToChar(outputAPI$content))
-         df<-as.data.frame(data)
-# Make a box plot of countryname deathrate  by game type.
-g<-ggplot(df,aes(Countries.NewConfirmed)) 
+# Make a box plot of comfirmrate deathrate  of  countries. 
+a<-data.frame(group ="deathrate",value =df$deathRate)
+b<-data.frame(group ="comfirmrate",value=df$NewconfirmRate)
+plotData<-rbind(a,b)
+g<-ggplot(plotData,aes(x=group,y=value,fill=group)) 
   # Add the box plot layer.
- g+geom_boxplot() + 
+ g+geom_boxplot() + coord_cartesian(ylim=c(0,225))
     # Add a title.
-  ggtitle("ConfirmedCases accorss countries") + 
-  # Remove the legend because it isn't needed.
-  theme(legend.position="none")
-
+  ggtitle("comfirmrate vs deathrate accorss  countries ") 
+```
+```{r}
+#Create a histogram of Newconfirmrate of  countries from data set.
+g<-ggplot(df,aes(x=NewconfirmRate))
+g+geom_histogram(binwidth = 30,color="blue",fill="red")
 ```
