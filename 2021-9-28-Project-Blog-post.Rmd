@@ -228,12 +228,9 @@ plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate))
 # Create a scatter Plot of death rate vs NewconfirmRate of Countries
 plot2<-df %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) 
 plot2+geom_point() + 
-  #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
-  # Set the axes labels.
   scale_x_continuous("NewconfirmRate") + 
   scale_y_continuous("deathRate") +
-  # Add a title.
   ggtitle(" death rate vs NewconfirmRate of countries ")
 
 ```
@@ -244,15 +241,15 @@ a<-data.frame(group ="deathrate",value =df$deathRate)
 b<-data.frame(group ="comfirmrate",value=df$NewconfirmRate)
 plotData<-rbind(a,b)
 g<-ggplot(plotData,aes(x=group,y=value,fill=group)) 
-  # Add the box plot layer.
- g+geom_boxplot() + coord_cartesian(ylim=c(0,225))
-    # Add a title.
+  g+geom_boxplot() + coord_cartesian(ylim=c(0,225))+
   ggtitle("comfirmrate vs deathrate accorss  countries ") 
 ```
 ```{r}
 #Create a histogram of Newconfirmrate of  countries from data set.
 g<-ggplot(df,aes(x=NewconfirmRate))
-g+geom_histogram(binwidth = 30,color="blue",fill="red")
+g+geom_histogram(binwidth = 30,color="blue",fill="red")+
+  ggtitle("histogram of Newconfirmrate of  countries ")
+
 ```
 # numerical summaries for all the countries
 ```{r}
