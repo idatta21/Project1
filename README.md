@@ -5,13 +5,6 @@ Ipsita Datta
 
      This document is a vignette to show how to retrieve data from Covid19API.To demonstrate, I'll be interacting with the Covid19 API. I am going to build a few functions to interact with some of the endpoints and explore some of the data I can retrieve.
 
-– The most difficult part of the logic and programming for me is to make
-a requirement or what I should analysis and how I am going to implement
-that.
-
-– In,future, First I will sketch a project outline like what are the
-things is going to discuss or what are the data I should fetch from API.
-
 # Requirements
 
 To use the functions for interacting with the API, I used the following
@@ -250,7 +243,7 @@ plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate))
   ggtitle("Last 10 country death rate from Current data") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 # Create a scatter Plot of death rate vs NewconfirmRate of Countries
@@ -262,7 +255,7 @@ plot2+geom_point() +
   ggtitle(" death rate vs NewconfirmRate of countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 # Make a box plot of comfirmrate deathrate  of  countries.
@@ -278,7 +271,7 @@ g<-ggplot(plotData,aes(x=group,y=value,fill=group))
     ## Warning: Removed 7 rows containing non-finite values
     ## (stat_boxplot).
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 #Create a histogram of Newconfirmrate of  countries from data set.
@@ -287,7 +280,7 @@ g+geom_histogram(binwidth = 30,color="blue",fill="red")+
   ggtitle("histogram of Newconfirmrate of  countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- --> \# numerical
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> \# numerical
 summaries for all the countries
 
 ``` r
@@ -296,4 +289,4 @@ currentData %>% summarise(avg=round(mean(TotalConfirmed),0),sd=round(sd(TotalCon
 ```
 
     ##       avg      sd median    IQR
-    ## 1 1227497 4429359 162816 616545
+    ## 1 1230030 4438193 162816 616545

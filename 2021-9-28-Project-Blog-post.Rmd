@@ -11,10 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
      This document is a vignette to show how to retrieve data from Covid19API.To demonstrate, I'll be interacting with the Covid19 API. I am going to build a few functions to interact with some of the endpoints and explore some of the data I can retrieve.
     
- – The most difficult part of the logic and programming for me is to make a requirement or what I should analysis and how I am going to implement that.
- 
- – In,future, First I will sketch a project outline like what are the things is going to discuss or what are the data I should fetch from API.
- 
 # Requirements 
  To use the functions for interacting with the API, I used the following packages:
 
