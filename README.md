@@ -3,7 +3,10 @@ COVID19 API
 Ipsita Datta
 9/28/2021
 
-     This document is a vignette to show how to retrieve data from Covid19API.To demonstrate, I'll be interacting with the Covid19 API. I am going to build a few functions to interact with some of the endpoints and explore some of the data I can retrieve.
+     This document is a vignette to show how to retrieve data from Covid19API.
+     To demonstrate, I'll be interacting with the Covid19 API. I am going to 
+     build a few functions to interact with some of the endpoints and explore 
+     some of the data I can retrieve.
 
 # Requirements
 
@@ -24,12 +27,13 @@ Here are the functions to interact with Covid19 API.
 ## `Country`
 
 I wrote this function to interact with the `Country` endpoint of the
-Covid19 API.It returns all countries and associated provinces. The
+Covid19API. It returns all countries and associated provinces. The
 country\_slug variable is used for country specific data
 
 ``` r
 Country <-function(CountryName ="all"){
-    #Returns all the available countries and provinces, as well as the country slug for per country requests.
+    #Returns all the available countries and provinces, as well as the country 
+    #slug for per country requests.
   outputAPI<-GET("https://api.covid19api.com/countries")
   output<- outputAPI$content %>% rawToChar() %>% fromJSON()
   if ( CountryName != "all"){
@@ -80,7 +84,10 @@ C_summary<-function(CountryName ="all"){
          }
           # Otherwise, throw an informative error.
           else {
-          message <- paste("ERROR: Argument for country was not found in either","the Country or CountryCode or Slug columns. Try Countries('all') to","find the CountryName you're looking for.")
+          message <- paste("ERROR:Argument for country was not found in either",
+                           "the Country or CountryCode or Slug columns. Try 
+                           Countries('all') to","find the CountryName you're
+                           looking for.")
       stop(message)
           }
 }
@@ -97,7 +104,7 @@ else {
 
 ## `USAdetail`
 
-Returns all live cases for All provinces of USA. It can be use for a
+Returns all live cases for All provinces of USA.It can be use for a
 particular province with particular case type of USA too.These records
 are pulled every 10 minutes and are ungrouped. Country must be the slug
 from /countries or /summary. Cases must be one of: Deaths,Confirmed
@@ -109,7 +116,8 @@ USAdetail<-function(ProvinceName ="all",type  ){
      output<-fromJSON(baseurl)
     # If Province does not equal "all", check if it is a Province .
         if (ProvinceName != "all" ){
-           # If Province is in the Province column, subset output for just that row.
+           # If Province is in the Province column, subset output for just that 
+           #row.
              if (ProvinceName %in% output$Province){
                  output <- output %>%
                            filter(ProvinceName == Province) %>%
@@ -117,8 +125,8 @@ USAdetail<-function(ProvinceName ="all",type  ){
             }
             # Otherwise, warn the user and return the entire dataframe.
             else {
-            message <- paste("WARNING: Argument for Province was not found in either",
-                       "the Province  columns. Returning all",
+            message <- paste("WARNING: Argument for Province was not found in 
+                             either","the Province  columns. Returning all",
                        "or type should be Deaths,Confirmed ,Active,Recovered.")
            warning(message)
             }
@@ -149,7 +157,7 @@ fullurl<-paste0(path1,endpoints,Status)
 outputAPI <-fromJSON(fullurl)
 return(outputAPI)
 }
-  else{message <- paste("ERROR: Argument for country was not found in  Country ")
+  else{message <- paste("ERROR: Argument for country was not found in  Country")
       stop(message)
   }
 }
@@ -194,7 +202,7 @@ fullurl<-paste0(path1,"/status/",type,"/live")
 outputAPI<-fromJSON(fullurl)
 return(outputAPI)
 }
-  else{message <- paste("ERROR: Argument for country was not found in  Country ")
+  else{message <- paste("ERROR: Argument for country was not found in  Country")
       stop(message) }
 }
 #Livecount("iran","confirmed")
@@ -228,7 +236,8 @@ per countries.
 ``` r
 # Add a column for the death per 10000
 currentData1 <- currentData %>%
-  mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
+  mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),
+      NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
 df<-as.data.frame(currentData1)
 
 # Create a Bar Plot of deathRate per Country( last 10 country from the dataset).
@@ -268,8 +277,7 @@ g<-ggplot(plotData,aes(x=group,y=value,fill=group))
   ggtitle("comfirmrate vs deathrate accorss  countries ") 
 ```
 
-    ## Warning: Removed 7 rows containing non-finite values
-    ## (stat_boxplot).
+    ## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
@@ -285,7 +293,10 @@ summaries for all the countries
 
 ``` r
 # It shows the numerical summeries on TotalConfirmed for all the countries
-currentData %>% summarise(avg=round(mean(TotalConfirmed),0),sd=round(sd(TotalConfirmed),0),median=round(median(TotalConfirmed),0),IQR=round(IQR(TotalConfirmed),0))
+currentData %>% summarise(avg=round(mean(TotalConfirmed),0),
+                          sd=round(sd(TotalConfirmed),0),
+                          median=round(median(TotalConfirmed),0),
+                          IQR=round(IQR(TotalConfirmed),0))
 ```
 
     ##       avg      sd median    IQR
