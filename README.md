@@ -58,15 +58,16 @@ Country <-function(CountryName ="all"){
   
   return(output)
 }
+# for ex: Country() or Country("united-states") 
 ```
 
-## `summary`
+## `C_summary`
 
 This function returns current cases for all the country and can also
 return for single country if name passed as argument.
 
 ``` r
-summary<-function(CountryName ="all"){
+C_summary<-function(CountryName ="all"){
          ## Get all the number of cases from the summary endpoint.
          outputAPI<-fromJSON("https://api.covid19api.com/summary")
          output<-outputAPI$Countries
@@ -97,6 +98,8 @@ else {
         # Return the output data.frame.
         return(output)
 }
+
+#for ex: C_summary() or C_summary("united-states")
 ```
 
 ## `USAdetail`
@@ -116,7 +119,8 @@ USAdetail<-function(ProvinceName ="all",type  ){
            # If Province is in the Province column, subset output for just that row.
              if (ProvinceName %in% output$Province){
                  output <- output %>%
-                           filter(ProvinceName == Province) %>% select(all_of(type),Province)
+                           filter(ProvinceName == Province) %>%
+                   select(all_of(type),Province)
             }
             # Otherwise, warn the user and return the entire dataframe.
             else {
@@ -132,6 +136,7 @@ USAdetail<-function(ProvinceName ="all",type  ){
               return(output)
               }
 }
+#for ex: USAdetail() or USAdetail("North Carolina","Active")
 ```
 
 ## `CountryDatabycase`
@@ -155,6 +160,7 @@ return(outputAPI)
       stop(message)
   }
 }
+#for ex: CountryDatabycase("south-africa","deaths")
 ```
 
 ## `Allcasesbycountry`
@@ -211,29 +217,29 @@ along with global cases
 
 ``` r
 # Get the current cases for all of the country .
-currentData<- summary()
+currentData<- C_summary()
 ```
 
 Second, let’s pull a function returns cases by type for USA provinces.
 
 ``` r
 #Get all the cases of unites-states.
-currentData1<-USAdetail("Utah","Deaths")
-currentData2<-USAdetail("Utah","Recovered")
-Data<-cbind(currentData1,currentData2)
+currentData2<-USAdetail("Utah","Deaths")
+currentData3<-USAdetail("Utah","Recovered")
+Data<-cbind(currentData2,currentData3)
 ```
 
 Now two variable of interest for me are detahrate and newconfirmed rate
 per countries.
 
 ``` r
-# Add a column for the death per 100
-currentData <- currentData %>%
+# Add a column for the death per 10000
+currentData1 <- currentData %>%
   mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
-df<-as.data.frame(currentData)
+df<-as.data.frame(currentData1)
 
-# Create a Bar Plot of deathRate per Country( first 10 country from the dataset).
-plot1<-head(df,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate)) 
+# Create a Bar Plot of deathRate per Country( last 10 country from the dataset).
+plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate)) 
  plot1+ geom_col() + 
   #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
@@ -241,13 +247,13 @@ plot1<-head(df,10) %>% ggplot(aes(x=Country,y=deathRate,fill=deathRate))
   scale_x_discrete("Country") + 
   scale_y_continuous("DeathRate") +
   # Add a title.
-  ggtitle("First 10 country death rate from Current data") 
+  ggtitle("Last 10 country death rate from Current data") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
-# Create a scatter Plot of death rate vs NewconfirmRate from Current data
+# Create a scatter Plot of death rate vs NewconfirmRate of Countries
 plot2<-df %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) 
 plot2+geom_point() + 
   #  remove the legend.
@@ -256,23 +262,50 @@ plot2+geom_point() +
   scale_x_continuous("NewconfirmRate") + 
   scale_y_continuous("deathRate") +
   # Add a title.
-  ggtitle(" death rate vs NewconfirmRate from Current data")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
-
-``` r
-outputAPI<-GET("https://api.covid19api.com/summary")
-         data<-fromJSON(rawToChar(outputAPI$content))
-         df<-as.data.frame(data)
-# Make a box plot of countryname deathrate  by game type.
-g<-ggplot(df,aes(Countries.NewConfirmed)) 
-  # Add the box plot layer.
- g+geom_boxplot() + 
-    # Add a title.
-  ggtitle("ConfirmedCases accorss countries") + 
-  # Remove the legend because it isn't needed.
-  theme(legend.position="none")
+  ggtitle(" death rate vs NewconfirmRate of countries ")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+# Make a box plot of comfirmrate deathrate  of  countries.
+
+a<-data.frame(group ="deathrate",value =df$deathRate)
+b<-data.frame(group ="comfirmrate",value=df$NewconfirmRate)
+plotData<-rbind(a,b)
+g<-ggplot(plotData,aes(x=group,y=value,fill=group)) 
+  # Add the box plot layer.
+ g+geom_boxplot() + coord_cartesian(ylim=c(0,225))
+```
+
+    ## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
+
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+    # Add a title.
+  ggtitle("comfirmrate vs deathrate accorss  countries ") 
+```
+
+    ## $title
+    ## [1] "comfirmrate vs deathrate accorss  countries "
+    ## 
+    ## attr(,"class")
+    ## [1] "labels"
+
+``` r
+#Create a histogram of Newconfirmrate of  countries from data set.
+g<-ggplot(df,aes(x=NewconfirmRate))
+g+geom_histogram(binwidth = 30,color="blue",fill="red")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- --> \# numerical
+summaries for all the countries
+
+``` r
+# It shows the numerical summeries on TotalConfirmed for all the countries
+currentData %>% summarise(avg=round(mean(TotalConfirmed),0),sd=round(sd(TotalConfirmed),0),median=round(median(TotalConfirmed),0),IQR=round(IQR(TotalConfirmed),0))
+```
+
+    ##       avg      sd median    IQR
+    ## 1 1226461 4429140 161684 615474

@@ -200,17 +200,17 @@ currentData<- C_summary()
 Second, let's pull a function returns cases by type for USA provinces.
 ```{r}
 #Get all the cases of unites-states.
-currentData1<-USAdetail("Utah","Deaths")
-currentData2<-USAdetail("Utah","Recovered")
-Data<-cbind(currentData1,currentData2)
+currentData2<-USAdetail("Utah","Deaths")
+currentData3<-USAdetail("Utah","Recovered")
+Data<-cbind(currentData2,currentData3)
 ```
 Now two variable of interest for me are detahrate and newconfirmed rate per countries. 
 
 ```{r}
 # Add a column for the death per 10000
-currentData <- currentData %>%
+currentData1 <- currentData %>%
   mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),NewconfirmRate=round((NewConfirmed*10000 )/ TotalConfirmed,0)) %>% select (Country,deathRate,NewconfirmRate)
-df<-as.data.frame(currentData)
+df<-as.data.frame(currentData1)
 
 # Create a Bar Plot of deathRate per Country( last 10 country from the dataset).
 plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate)) 
