@@ -41,7 +41,7 @@ I wrote this function to interact with the `Country` endpoint of the Covid19API.
 It returns all countries and associated provinces. The country_slug variable is 
 used for country specific data
 
-```{r}
+```{r,warning=FALSE,message=FALSE}
 Country <-function(CountryName ="all"){
     #Returns all the available countries and provinces, as well as the country 
     #slug for per country requests.
@@ -74,7 +74,7 @@ Country <-function(CountryName ="all"){
 
 This function returns current cases for all the country  and can also return for
 single country if name passed as argument.
-```{r}
+```{r,warning=FALSE,message=FALSE}
 C_summary<-function(CountryName ="all"){
          ## Get all the number of cases from the summary endpoint.
          outputAPI<-fromJSON("https://api.covid19api.com/summary")
@@ -118,7 +118,7 @@ Returns all live cases  for All provinces of USA.It can be use for a particular
 province with particular case type of USA too.These records are pulled every 10 
 minutes and are ungrouped. Country must be the slug from /countries or /summary.
 Cases must be one of: Deaths,Confirmed ,Active,Recovered
-```{r}
+```{r,warning=FALSE,message=FALSE}
 USAdetail<-function(ProvinceName ="all",type  ){
     baseurl<-"https://api.covid19api.com/live/country/united-states"
      output<-fromJSON(baseurl)
@@ -154,7 +154,7 @@ all cases by case type for a country from the first recorded case. Country must
 be the country_slug from /countries. Cases must be one of: confirmed, recovered,
 deaths or Active.
 
-```{r}
+```{r,warning=FALSE,message=FALSE}
 CountryDatabycase<-function(Country ="all",Status){
 if (Country != "all"){
 baseurl<-"https://api.covid19api.com/dayone/country/"
@@ -175,7 +175,7 @@ return(outputAPI)
 Returns all cases by case type for a country from the first recorded case.
 Country must be the Slug from /countries or /summary. Cases must be one of: 
 confirmed, recovered, deaths or Active
-```{r}
+```{r,warning=FALSE,message=FALSE}
 Allcasesbycountry<-function(Country ="all" ,type){
 if (Country != "all"){
 baseurl<-"https://api.covid19api.com/dayone/country/"
@@ -195,7 +195,7 @@ else{message <- paste("ERROR: Argument for country was not found in  Country ")
 Returns all cases by case type for a country from the first recorded case with
 the latest record being the live count. Country must be the Slug from /countries
 or /summary. Cases must be one of: confirmed, recovered, deaths
-```{r}
+```{r,warning=FALSE,message=FALSE}
 Livecount<-function(Country="all",type){
 if (Country !="all"){
 baseurl<-"https://api.covid19api.com/dayone/country/"
@@ -216,7 +216,7 @@ get some data from them.<br>
 
 First, let's pull A function returns current cases for all the country along 
 with global cases
-```{r}
+```{r,warning=FALSE,message=FALSE}
 # Get the current cases for all of the country .
 currentData<- C_summary()
 ```
@@ -230,7 +230,7 @@ Data<-cbind(currentData2,currentData3)
 Now two variable of interest for me are detahrate and newconfirmed rate per
 countries. 
 
-```{r}
+```{r,warning=FALSE,message=FALSE}
 # Add a column for the death per 10000
 currentData1 <- currentData %>%
   mutate(deathRate = round((NewDeaths*10000 )/ TotalDeaths,0),
@@ -249,7 +249,7 @@ plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate))
   ggtitle("Last 10 country death rate from Current data") 
 
 ```
-```{r,warning=FALSE}
+```{r,warning=FALSE,message=FALSE}
 # Create a scatter Plot of death rate vs NewconfirmRate of Countries
 plot2<-df %>% ggplot(aes(x=NewconfirmRate,y=deathRate)) 
 plot2+geom_point() + 
@@ -259,7 +259,7 @@ plot2+geom_point() +
   ggtitle(" death rate vs NewconfirmRate of countries ")
 
 ```
-```{r}
+```{r,warning=FALSE,message=FALSE}
 # Make a box plot of comfirmrate deathrate  of  countries.
 
 a<-data.frame(group ="deathrate",value =df$deathRate)
@@ -269,16 +269,18 @@ g<-ggplot(plotData,aes(x=group,y=value,fill=group))
   g+geom_boxplot() + coord_cartesian(ylim=c(0,225))+
   ggtitle("comfirmrate vs deathrate accorss  countries ") 
 ```
-```{r}
+```{r,warning=FALSE,message=FALSE}
 #Create a histogram of Newconfirmrate of  countries from data set.
 g<-ggplot(df,aes(x=NewconfirmRate))
 g+geom_histogram(binwidth = 30,color="blue",fill="red")+
   ggtitle("histogram of Newconfirmrate of  countries ")
 
 ```
-```{r}
-# Create a Bar Plot of NewConfirmed per Country( First 30 country from the dataset).
-plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,fill=NewConfirmed)) 
+```{r,warning=FALSE,message=FALSE}
+# Create a Bar Plot of NewConfirmed per Country( First 30 country from the 
+# dataset).
+plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,
+                                         fill=NewConfirmed)) 
  plot3+ geom_col() + 
   #  remove the legend.
   theme(axis.text.x=element_text(angle=90), legend.position="none") +
@@ -290,8 +292,8 @@ plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,fill=NewConfir
 
 ```
 
-# numerical summaries for all the countries
-```{r}
+### numerical summaries for all the countries
+```{r,warning=FALSE,message=FALSE}
 # It shows the numerical summeries on TotalConfirmed for all the countries
 currentData %>% summarise(avg=round(mean(TotalConfirmed),0),
                           sd=round(sd(TotalConfirmed),0),
@@ -299,12 +301,14 @@ currentData %>% summarise(avg=round(mean(TotalConfirmed),0),
                           IQR=round(IQR(TotalConfirmed),0))
 ```
 
-# contingency table
-here under var1 shows number of cases and the frequency of occurence of that number of cases accross all the countries.
-For example,( var1=0 and freq=86 ) It means there are 86 countries has currently zero new death cases. 
-```{r}
+### contingency table
+here under var1 shows number of cases and the frequency of occurence of that 
+number of cases accross all the countries.
+For example,( var1=0 and freq=86 ) It means there are 86 countries has currently
+zero new death cases. 
+```{r,warning=FALSE,message=FALSE}
 
-con_tb<-table(t1$NewDeaths)
+con_tb<-table(currentData$NewDeaths)
 t1<-as.data.frame(con_tb)
 t1
 ```
