@@ -284,3 +284,12 @@ currentData %>% summarise(avg=round(mean(TotalConfirmed),0),
                           median=round(median(TotalConfirmed),0),
                           IQR=round(IQR(TotalConfirmed),0))
 ```
+# contingency table
+here under var1 shows number of cases and the frequency of occurence of that number of cases accross all the countries.
+For example,( var1=0 and freq=86 ) It means there are 86 countries has currently zero new death cases. 
+```{r}
+
+con_tb<-table(t1$NewDeaths)
+as.data.frame(con_tb)
+
+```
