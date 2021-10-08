@@ -276,6 +276,19 @@ g+geom_histogram(binwidth = 30,color="blue",fill="red")+
   ggtitle("histogram of Newconfirmrate of  countries ")
 
 ```
+```{r}
+# Create a Bar Plot of NewConfirmed per Country( First 30 country from the dataset).
+plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,fill=NewConfirmed)) 
+ plot3+ geom_col() + 
+  #  remove the legend.
+  theme(axis.text.x=element_text(angle=90), legend.position="none") +
+  # Set the axes labels.
+  scale_x_discrete("Country") + 
+  scale_y_continuous("NewConfirmed") +
+  # Add a title.
+  ggtitle("First 30 country NewConfirmed cases from Current data") 
+
+```
 # numerical summaries for all the countries
 ```{r}
 # It shows the numerical summeries on TotalConfirmed for all the countries
@@ -290,6 +303,6 @@ For example,( var1=0 and freq=86 ) It means there are 86 countries has currently
 ```{r}
 
 con_tb<-table(t1$NewDeaths)
-as.data.frame(con_tb)
+t1<-as.data.frame(con_tb)
 
 ```

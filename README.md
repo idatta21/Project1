@@ -252,7 +252,7 @@ plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate))
   ggtitle("Last 10 country death rate from Current data") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 # Create a scatter Plot of death rate vs NewconfirmRate of Countries
@@ -264,7 +264,7 @@ plot2+geom_point() +
   ggtitle(" death rate vs NewconfirmRate of countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 # Make a box plot of comfirmrate deathrate  of  countries.
@@ -279,7 +279,7 @@ g<-ggplot(plotData,aes(x=group,y=value,fill=group))
 
     ## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
 
-![](README_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 #Create a histogram of Newconfirmrate of  countries from data set.
@@ -288,7 +288,22 @@ g+geom_histogram(binwidth = 30,color="blue",fill="red")+
   ggtitle("histogram of Newconfirmrate of  countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-54-1.png)<!-- --> \# numerical
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+# Create a Bar Plot of NewConfirmed per Country( First 30 country from the dataset).
+plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,fill=NewConfirmed)) 
+ plot3+ geom_col() + 
+  #  remove the legend.
+  theme(axis.text.x=element_text(angle=90), legend.position="none") +
+  # Set the axes labels.
+  scale_x_discrete("Country") + 
+  scale_y_continuous("NewConfirmed") +
+  # Add a title.
+  ggtitle("First 30 country NewConfirmed cases from Current data") 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- --> \# numerical
 summaries for all the countries
 
 ``` r
@@ -311,63 +326,5 @@ cases.
 
 ``` r
 con_tb<-table(t1$NewDeaths)
-as.data.frame(con_tb)
+t1<-as.data.frame(con_tb)
 ```
-
-    ##    Var1 Freq
-    ## 1     0   86
-    ## 2     1   10
-    ## 3     2    6
-    ## 4     3    5
-    ## 5     4    4
-    ## 6     5    5
-    ## 7     6    4
-    ## 8     7    3
-    ## 9     8    7
-    ## 10    9    2
-    ## 11   10    3
-    ## 12   11    3
-    ## 13   12    2
-    ## 14   13    1
-    ## 15   15    1
-    ## 16   16    1
-    ## 17   17    1
-    ## 18   18    2
-    ## 19   19    1
-    ## 20   20    1
-    ## 21   21    1
-    ## 22   23    1
-    ## 23   24    1
-    ## 24   25    1
-    ## 25   26    2
-    ## 26   27    1
-    ## 27   28    1
-    ## 28   29    1
-    ## 29   30    2
-    ## 30   31    2
-    ## 31   32    1
-    ## 32   33    1
-    ## 33   36    1
-    ## 34   37    1
-    ## 35   39    5
-    ## 36   44    1
-    ## 37   45    1
-    ## 38   46    1
-    ## 39   51    2
-    ## 40   57    1
-    ## 41   68    1
-    ## 42   81    1
-    ## 43   94    1
-    ## 44  105    1
-    ## 45  123    1
-    ## 46  125    1
-    ## 47  150    1
-    ## 48  217    1
-    ## 49  233    1
-    ## 50  282    1
-    ## 51  318    1
-    ## 52  339    1
-    ## 53  530    1
-    ## 54  790    1
-    ## 55  910    1
-    ## 56 2556    1
