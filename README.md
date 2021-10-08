@@ -252,7 +252,7 @@ plot1<-  ggplot(tail(df,30),aes(x=Country,y=deathRate,fill=deathRate))
   ggtitle("Last 10 country death rate from Current data") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 # Create a scatter Plot of death rate vs NewconfirmRate of Countries
@@ -264,7 +264,7 @@ plot2+geom_point() +
   ggtitle(" death rate vs NewconfirmRate of countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 # Make a box plot of comfirmrate deathrate  of  countries.
@@ -279,7 +279,7 @@ g<-ggplot(plotData,aes(x=group,y=value,fill=group))
 
     ## Warning: Removed 7 rows containing non-finite values (stat_boxplot).
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 #Create a histogram of Newconfirmrate of  countries from data set.
@@ -288,7 +288,7 @@ g+geom_histogram(binwidth = 30,color="blue",fill="red")+
   ggtitle("histogram of Newconfirmrate of  countries ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 # Create a Bar Plot of NewConfirmed per Country( First 30 country from the dataset).
@@ -303,8 +303,9 @@ plot3<-  ggplot(head(currentData,30),aes(x=Country,y=NewConfirmed,fill=NewConfir
   ggtitle("First 30 country NewConfirmed cases from Current data") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- --> \# numerical
-summaries for all the countries
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+# numerical summaries for all the countries
 
 ``` r
 # It shows the numerical summeries on TotalConfirmed for all the countries
@@ -327,4 +328,8 @@ cases.
 ``` r
 con_tb<-table(t1$NewDeaths)
 t1<-as.data.frame(con_tb)
+t1
 ```
+
+    ## [1] Freq
+    ## <0 rows> (or 0-length row.names)
